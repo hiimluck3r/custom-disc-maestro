@@ -28,9 +28,6 @@ jobs:
           java-version: "21"
           distribution: "temurin"
 
-      - name: Use the runner's JDK for Gradle
-        run: sed -i '/^org\.gradle\.java\.home=/d' gradle.properties
-
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 

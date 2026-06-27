@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.cdm.audio.DiscPlayback;
-import com.cdm.data.NoteSequence;
 import com.cdm.registry.ModItems;
 
 import net.minecraft.core.BlockPos;
@@ -57,13 +56,13 @@ public abstract class JukeboxBlockEntityMixin {
         if (!player.isPlaying()) return;
         ItemStack disc = be.getTheItem();
         if (!disc.is(ModItems.MUSIC_DISC.get())) return;
-        NoteSequence seq = DiscPlayback.resolveMelody(disc);
+        DiscPlayback.Prepared prepared = DiscPlayback.prepare(disc);
         int tick = (int) player.getTicksSinceSongStarted();
-        if (tick >= seq.lengthTicks()) {
+        if (tick >= prepared.lengthTicks()) {
             player.stop(level, state); // notes are done — stop now instead of waiting for the datapack length
             return;
         }
         float wear = disc.isDamageableItem() ? (float) disc.getDamageValue() / disc.getMaxDamage() : 0F;
-        DiscPlayback.playTick(level, pos, seq, tick, wear);
+        DiscPlayback.playTick(level, pos, prepared, tick, wear);
     }
 }

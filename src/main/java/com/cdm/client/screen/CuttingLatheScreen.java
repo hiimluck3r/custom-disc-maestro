@@ -12,12 +12,14 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 import com.cdm.audio.NoteInstruments;
+import com.cdm.block.entity.CuttingLatheBlockEntity;
 import com.cdm.data.DiscMeta;
 import com.cdm.data.NoteSequence;
 import com.cdm.menu.CuttingLatheMenu;
 import com.cdm.nbs.NbsImport;
 import com.cdm.nbs.NbsParser;
 import com.cdm.net.LatheRecordPayload;
+import com.cdm.registry.ModItems;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -28,19 +30,26 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * Cutting Lathe editor: a scrollable piano-roll. Columns are 16th-note time steps (length limited only
  * by the song length, scroll horizontally), rows are pitch shown as piano keys. Pick an instrument,
  * click/drag cells to paint notes, set a free BPM, Play to audition with a moving playhead, then Burn
- * to cut the melody onto a master disc (consumes a blank disc from your inventory). {@code .nbs} files
+ * to cut the melody onto a master disc (consumes the blank disc in the input slot). {@code .nbs} files
  * import straight onto the roll.
  */
 public class CuttingLatheScreen extends AbstractContainerScreen<CuttingLatheMenu> {
     private static final ResourceLocation BG =
             ResourceLocation.fromNamespaceAndPath("cdm", "textures/gui/cutting_lathe.png");
-    private static final int GUI_W = 256, GUI_H = 230;
+    // The editor texture covers the top TEX_H; the slot + inventory panel below is drawn procedurally.
+    private static final int GUI_W = 256, TEX_H = 230, GUI_H = 340;
+
+    // Worded purpose for the lathe's two item slots (keyed by menu slot index), shown on hover.
+    private static final java.util.Map<Integer, Component> SLOT_HINTS = java.util.Map.of(
+            CuttingLatheBlockEntity.SLOT_BLANK, Component.translatable("cdm.lathe.hint.blank"),
+            CuttingLatheBlockEntity.SLOT_OUTPUT, Component.translatable("cdm.lathe.hint.master"));
 
     // Piano roll geometry.
     private static final int KEY_X = 6, GRID_X = 22, GRID_Y = 19;
@@ -249,6 +258,7 @@ public class CuttingLatheScreen extends AbstractContainerScreen<CuttingLatheMenu
     }
 
     private void applyImport(Optional<NbsImport> result) {
+        if (minecraft != null && minecraft.screen != this) return; // screen closed while reading
         if (result.isEmpty()) {
             feedback(Component.translatable("cdm.lathe.import_failed"));
             return;
@@ -419,7 +429,8 @@ public class CuttingLatheScreen extends AbstractContainerScreen<CuttingLatheMenu
 
     @Override
     protected void renderBg(GuiGraphics gg, float partialTick, int mouseX, int mouseY) {
-        gg.blit(BG, leftPos, topPos, 0.0F, 0.0F, GUI_W, GUI_H, GUI_W, GUI_H);
+        gg.blit(BG, leftPos, topPos, 0.0F, 0.0F, GUI_W, TEX_H, GUI_W, TEX_H);
+        drawSlotPanel(gg);
         int gx = leftPos + GRID_X, gy = topPos + GRID_Y;
         int gridBottomAbs = topPos + GRID_BOTTOM;
 
@@ -469,6 +480,31 @@ public class CuttingLatheScreen extends AbstractContainerScreen<CuttingLatheMenu
         gg.fill(thumbX, ty, thumbX + thumbW, ty + SCROLL_H, 0xFF8A93A8);
     }
 
+    /** Draws the procedural panel below the editor texture: the two lathe slots and the player inventory. */
+    private void drawSlotPanel(GuiGraphics gg) {
+        int top = topPos + TEX_H;
+        gg.fill(leftPos, top, leftPos + GUI_W, topPos + GUI_H, 0xFF1E222C);
+        gg.fill(leftPos + 3, top, leftPos + GUI_W - 3, topPos + GUI_H - 3, 0xFF2A3140);
+
+        int blankX = leftPos + CuttingLatheMenu.BLANK_X, blankY = topPos + CuttingLatheMenu.BLANK_Y;
+        int outX = leftPos + CuttingLatheMenu.OUTPUT_X, outY = topPos + CuttingLatheMenu.OUTPUT_Y;
+        SlotIcons.drawSlot(gg, blankX, blankY);
+        SlotIcons.drawSlot(gg, outX, outY);
+        gg.drawString(this.font, ">", blankX + 20, blankY + 4, 0xFFB8C0D0, false);
+        if (!menu.slots.get(CuttingLatheBlockEntity.SLOT_BLANK).hasItem()) {
+            SlotIcons.ghost(gg, new ItemStack(ModItems.BLANK_DISC.get()), blankX, blankY);
+        }
+
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 9; c++) {
+                SlotIcons.drawSlot(gg, leftPos + CuttingLatheMenu.INV_X + c * 18, topPos + CuttingLatheMenu.INV_Y + r * 18);
+            }
+        }
+        for (int c = 0; c < 9; c++) {
+            SlotIcons.drawSlot(gg, leftPos + CuttingLatheMenu.INV_X + c * 18, topPos + CuttingLatheMenu.HOTBAR_Y);
+        }
+    }
+
     private void drawMiniButton(GuiGraphics gg, int x, int y, String label) {
         gg.fill(x, y, x + BPM_BTN_W, y + BPM_BTN_H, 0xFF20242E);
         gg.fill(x, y, x + BPM_BTN_W, y + 1, 0xFF4A5266);
@@ -493,6 +529,7 @@ public class CuttingLatheScreen extends AbstractContainerScreen<CuttingLatheMenu
             }
         }
         this.renderTooltip(gg, mouseX, mouseY);
+        SlotIcons.emptyHint(gg, this.hoveredSlot, mouseX, mouseY, SLOT_HINTS);
     }
 
     @Override
@@ -502,6 +539,7 @@ public class CuttingLatheScreen extends AbstractContainerScreen<CuttingLatheMenu
         gg.drawString(this.font, Component.translatable("cdm.lathe.notes", notes.size()),
                 PAL_X + 110, PAL_Y - 10, 0xFFB8C0D0, false);
         gg.drawString(this.font, Component.translatable("cdm.lathe.tempo", bpm), BPM_LABEL_X, CTRL_Y + 3, 0xFFE8E8E8, false);
+        gg.drawString(this.font, this.playerInventoryTitle, CuttingLatheMenu.INV_X, CuttingLatheMenu.INV_Y - 10, 0xFFB8C0D0, false);
     }
 
     /** Display names for note-block instruments 0..15 (matches {@link NoteInstruments} order). */

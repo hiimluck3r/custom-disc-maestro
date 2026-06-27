@@ -2,6 +2,7 @@ package com.cdm;
 
 import org.slf4j.Logger;
 
+import com.cdm.cauldron.NickelCauldron;
 import com.cdm.registry.ModBlockEntities;
 import com.cdm.registry.ModBlocks;
 import com.cdm.registry.ModComponents;
@@ -14,7 +15,6 @@ import com.mojang.logging.LogUtils;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -38,12 +38,10 @@ public class CDMMod {
         ModMenus.MENUS.register(modEventBus);
         ModRecipes.SERIALIZERS.register(modEventBus);
         ModCreativeTabs.TABS.register(modEventBus);
-
-        modContainer.registerConfig(ModConfig.Type.COMMON, CDMConfig.SPEC);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(com.cdm.cauldron.NickelCauldron::setup);
+        event.enqueueWork(NickelCauldron::setup);
         LOGGER.info("Custom Disc Maestro: common setup complete.");
     }
 }

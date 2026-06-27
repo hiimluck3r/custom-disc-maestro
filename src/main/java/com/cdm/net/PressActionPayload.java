@@ -6,6 +6,7 @@ import com.cdm.menu.RecordPressMenu;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -38,8 +39,7 @@ public record PressActionPayload(BlockPos pos) implements CustomPacketPayload {
                 player.level().playSound(null, msg.pos(), SoundEvents.PISTON_CONTRACT,
                         SoundSource.BLOCKS, 0.7F, 0.8F);
             } else {
-                player.displayClientMessage(
-                        net.minecraft.network.chat.Component.translatable("cdm.press.fail"), true);
+                player.displayClientMessage(Component.translatable("cdm.press.fail"), true);
             }
         });
     }

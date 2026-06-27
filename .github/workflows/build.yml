@@ -30,12 +30,6 @@ jobs:
           java-version: "21"
           distribution: "temurin"
 
-      # gradle.properties pins org.gradle.java.home to a local machine path (the system default Java
-      # there is a JRE). On CI, setup-java already provides a full JDK 21 via JAVA_HOME, so drop the
-      # override and let Gradle use the runner's toolchain.
-      - name: Use the runner's JDK for Gradle
-        run: sed -i '/^org\.gradle\.java\.home=/d' gradle.properties
-
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
