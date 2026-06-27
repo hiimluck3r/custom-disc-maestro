@@ -1,7 +1,11 @@
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
 plugins {
     id 'java-library'
     id 'maven-publish'
     id 'net.neoforged.moddev' version '2.0.141'
+    id 'com.modrinth.minotaur' version '2.8.7'
+    id 'net.darkhax.curseforgegradle' version '1.1.25'
     id 'idea'
 }
 
@@ -123,6 +127,62 @@ publishing {
             url "file://${project.projectDir}/repo"
         }
     }
+}
+
+// --- Release publishing to Modrinth + CurseForge ---------------------------------------------------
+// Credentials come from env (MODRINTH_TOKEN / CURSEFORGE_TOKEN); project IDs from gradle properties or
+// env (MODRINTH_PROJECT_ID / CURSEFORGE_PROJECT_ID). The 'build' task never needs any of these.
+
+// Extract the current version's section from CHANGELOG.md for the release notes.
+ext.releaseChangelog = {
+    def file = rootProject.file('CHANGELOG.md')
+    if (!file.exists()) return "Release ${mod_version}".toString()
+    def text = file.text
+    def marker = "## [${mod_version}]"
+    if (!text.contains(marker)) return text.trim()
+    def section = text.substring(text.indexOf(marker))
+    def next = section.indexOf('\n## [', 1)
+    (next > 0 ? section.substring(0, next) : section).trim()
+}
+
+ext.cfProjectId = (project.findProperty('curseforge_project_id') ?: System.getenv('CURSEFORGE_PROJECT_ID') ?: '').toString()
+
+// release / beta / alpha, derived from the version string (used by both publishers).
+ext.releaseType = {
+    def v = mod_version.toString()
+    v.contains('-alpha') ? 'alpha' : (v.contains('-beta') || v.contains('-rc')) ? 'beta' : 'release'
+}
+
+modrinth {
+    token = providers.environmentVariable('MODRINTH_TOKEN').orElse('')
+    projectId = providers.gradleProperty('modrinth_project_id')
+            .orElse(providers.environmentVariable('MODRINTH_PROJECT_ID')).orElse('')
+    versionNumber = "${mod_version}+${minecraft_version}"
+    versionType = project.ext.releaseType()
+    uploadFile = tasks.named('jar')
+    gameVersions.add(minecraft_version.toString())
+    loaders.add('neoforge')
+    detectLoaders = false
+    changelog = providers.provider { project.ext.releaseChangelog() }
+}
+
+tasks.register('curseforge', TaskPublishCurseForge) {
+    group = 'publishing'
+    description = 'Publishes the mod jar to CurseForge'
+    apiToken = System.getenv('CURSEFORGE_TOKEN') ?: ''
+    def mainFile = upload(project.ext.cfProjectId, tasks.jar)
+    mainFile.releaseType = project.ext.releaseType()
+    mainFile.changelogType = 'markdown'
+    mainFile.changelog = project.ext.releaseChangelog()
+    mainFile.addGameVersion(minecraft_version.toString())
+    mainFile.addModLoader('NeoForge')
+    mainFile.addJavaVersion('Java 21')
+}
+
+tasks.register('publishMods') {
+    group = 'publishing'
+    description = 'Publishes the mod to Modrinth and CurseForge'
+    dependsOn('modrinth', 'curseforge')
 }
 
 tasks.withType(JavaCompile).configureEach {

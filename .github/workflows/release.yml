@@ -12,6 +12,9 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    env:
+      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+      CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -36,6 +39,15 @@ jobs:
 
       - name: Build
         run: ./gradlew build --no-daemon --stacktrace
+
+      # External publishes run only when the matching token secret is configured.
+      - name: Publish to Modrinth
+        if: ${{ env.MODRINTH_TOKEN != '' }}
+        run: ./gradlew modrinth --no-daemon --stacktrace
+
+      - name: Publish to CurseForge
+        if: ${{ env.CURSEFORGE_TOKEN != '' }}
+        run: ./gradlew curseforge --no-daemon --stacktrace
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
