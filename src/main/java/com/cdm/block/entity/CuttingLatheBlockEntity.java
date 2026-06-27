@@ -65,6 +65,7 @@ public class CuttingLatheBlockEntity extends BlockEntity implements MenuProvider
         disc.set(ModComponents.RECORD_CONTENT.get(),
                 new RecordContent(RecordContent.Side.ofNotes(safe, safeMeta.title()), RecordContent.Side.EMPTY, 33));
         disc.set(ModComponents.DISC_META.get(), safeMeta);
+        disc.set(ModComponents.MASTER.get(), true); // a lathe cut is a master; only masters electroform
         return disc;
     }
 

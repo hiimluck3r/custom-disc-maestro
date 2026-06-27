@@ -13,6 +13,10 @@ All notable changes to this project are documented here. The format is based on
 ### Changed
 - Disc playback prepares and indexes each melody once instead of re-validating and scanning the whole
   note list every tick, lowering server cost for long discs.
+- Only **master discs** can be electroformed into a galvanic matrix — a pressed (final) vinyl record no
+  longer can. Master cuts are now explicitly tagged (`cdm:master` component) and labelled "Master" in
+  the tooltip.
+- The galvanic matrix keeps its own item name ("Galvanic Matrix") and shows the track in its tooltip.
 
 ### Removed
 - Unused configuration options (file-import / Simple Voice Chat / upload-size / playback-range) left

@@ -9,6 +9,7 @@ import com.cdm.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -62,6 +63,13 @@ public final class NickelCauldron {
         RecordContent content = disc.get(ModComponents.RECORD_CONTENT.get());
         if (content == null) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION; // not a recorded disc
+        }
+        // Only a master cut may be electroformed — a pressed (final) vinyl record cannot.
+        if (!Boolean.TRUE.equals(disc.get(ModComponents.MASTER.get()))) {
+            if (!level.isClientSide) {
+                player.displayClientMessage(Component.translatable("cdm.cauldron.not_master"), true);
+            }
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
         if (!level.isClientSide) {
             ItemStack matrix = new ItemStack(ModItems.MATRIX.get());

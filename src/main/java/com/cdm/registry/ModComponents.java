@@ -61,4 +61,9 @@ public final class ModComponents {
      *  inherit the master's degradation (a broken master makes a matrix that stamps broken records). */
     public static final Supplier<DataComponentType<Integer>> BAKED_WEAR = register("baked_wear",
             b -> b.persistent(com.mojang.serialization.Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+
+    /** Marks a freshly cut master disc. Only masters can be electroformed into a galvanic matrix;
+     *  pressed (final) vinyl records carry a {@link #DISC_DESIGN} but never this, so they can't. */
+    public static final Supplier<DataComponentType<Boolean>> MASTER = register("master",
+            b -> b.persistent(com.mojang.serialization.Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 }

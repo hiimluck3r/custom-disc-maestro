@@ -9,6 +9,7 @@
   "item.cdm.music_disc": "Music Disc",
   "item.cdm.music_disc.by": "by %s",
   "item.cdm.music_disc.album": "Album: %s",
+  "item.cdm.music_disc.master": "Master",
   "item.cdm.matrix": "Galvanic Matrix",
   "item.cdm.kupfernickel_bucket": "Kupfernickel Bucket",
   "fluid.cdm.kupfernickel": "Kupfernickel Bath",
@@ -52,6 +53,8 @@
   "cdm.lathe.import_ok": "Imported %s notes from .nbs",
   "cdm.lathe.import_failed": "Could not read that .nbs file",
   "cdm.lathe.import_too_big": "That .nbs file is too large",
+
+  "cdm.cauldron.not_master": "Only a master disc can be electroformed — not a pressed record",
 
   "cdm.press.press": "Press",
   "cdm.press.hint.matrix": "Matrix",

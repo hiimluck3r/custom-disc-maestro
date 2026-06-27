@@ -2,8 +2,9 @@ package com.cdm.item;
 
 import java.util.List;
 
-import com.cdm.data.DiscMeta;
+import com.cdm.registry.ModComponents;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +26,9 @@ public class MusicDiscItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        if (Boolean.TRUE.equals(stack.get(ModComponents.MASTER.get()))) {
+            tooltip.add(Component.translatable("item.cdm.music_disc.master").withStyle(ChatFormatting.AQUA));
+        }
         DiscNaming.appendMeta(stack, tooltip);
         super.appendHoverText(stack, context, tooltip, flag);
     }
