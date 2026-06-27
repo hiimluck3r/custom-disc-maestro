@@ -39,4 +39,19 @@ public final class DiscNaming {
         meta.album().ifPresent(album ->
                 tooltip.add(Component.translatable("item.cdm.music_disc.album", album).withStyle(ChatFormatting.DARK_GRAY)));
     }
+
+    /**
+     * Like {@link #appendMeta} but also lists the track title first. For items that keep their own item
+     * name (e.g. the galvanic matrix) yet still want to show which song they carry in the tooltip.
+     */
+    public static void appendTitledMeta(ItemStack stack, List<Component> tooltip) {
+        DiscMeta meta = stack.get(ModComponents.DISC_META.get());
+        if (meta == null || meta.isEmpty()) {
+            return;
+        }
+        if (!meta.title().isBlank()) {
+            tooltip.add(Component.literal(meta.title()).withStyle(ChatFormatting.GRAY));
+        }
+        appendMeta(stack, tooltip);
+    }
 }

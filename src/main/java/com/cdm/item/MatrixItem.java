@@ -8,8 +8,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 /**
- * The galvanic matrix. Carries a track's {@code RecordContent} + {@code DiscMeta}, so it shows the song
- * name and author/album exactly like the music disc it was grown from. Has durability for a run of presses.
+ * The galvanic matrix. Carries a track's {@code RecordContent} + {@code DiscMeta}. It keeps its own item
+ * name ("Galvanic Matrix") and shows the track title + author/album in the tooltip. Has durability for a
+ * run of presses.
  */
 public class MatrixItem extends Item {
     public MatrixItem(Properties properties) {
@@ -17,13 +18,8 @@ public class MatrixItem extends Item {
     }
 
     @Override
-    public Component getName(ItemStack stack) {
-        return DiscNaming.name(stack, () -> super.getName(stack));
-    }
-
-    @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        DiscNaming.appendMeta(stack, tooltip);
+        DiscNaming.appendTitledMeta(stack, tooltip);
         super.appendHoverText(stack, context, tooltip, flag);
     }
 }

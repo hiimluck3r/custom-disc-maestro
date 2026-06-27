@@ -47,8 +47,8 @@
   "cdm.lathe.notes": "%s notes",
   "cdm.lathe.need_blank": "Put a Blank Disc in the input slot",
   "cdm.lathe.output_blocked": "Take the master disc out of the output slot first",
-  "cdm.lathe.hint.blank": "Blank Disc (input)",
-  "cdm.lathe.hint.master": "Master Disc (output)",
+  "cdm.lathe.hint.blank": "Blank Disc",
+  "cdm.lathe.hint.master": "Master Disc",
   "cdm.lathe.import_ok": "Imported %s notes from .nbs",
   "cdm.lathe.import_failed": "Could not read that .nbs file",
   "cdm.lathe.import_too_big": "That .nbs file is too large",
@@ -75,11 +75,5 @@
   "cdm.packaging.title_field": "Title",
   "cdm.packaging.bg": "Cover",
   "cdm.packaging.sticker": "Colour",
-  "cdm.packaging.sticker_style": "Pattern",
-
-  "cdm.configuration.title": "Custom Disc Maestro Configs",
-  "cdm.configuration.allowFileImport": "Allow File Import",
-  "cdm.configuration.requireVoicechat": "Require Simple Voice Chat",
-  "cdm.configuration.maxUploadBytes": "Max Upload Size (bytes)",
-  "cdm.configuration.playbackRange": "Playback Range (blocks)"
+  "cdm.packaging.sticker_style": "Pattern"
 }
