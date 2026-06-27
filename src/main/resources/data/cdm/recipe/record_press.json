@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["III", "IPI", "CCC"],
+  "key": {
+    "I": { "item": "minecraft:iron_ingot" },
+    "P": { "item": "minecraft:piston" },
+    "C": { "item": "minecraft:copper_ingot" }
+  },
+  "result": { "id": "cdm:record_press", "count": 1 }
+}

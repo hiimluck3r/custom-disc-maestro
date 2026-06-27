@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cdm:item/sleeve_stencil",
+    "layer1": "cdm:item/stencil_window",
+    "layer2": "cdm:item/sleeve_sticker_ribbon"
+  }
+}

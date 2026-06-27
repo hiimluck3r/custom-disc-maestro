@@ -1,0 +1,38 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "cdm:item/music_disc_style_0",
+      "predicate": {
+        "cdm:disc_look": 0.2
+      }
+    },
+    {
+      "model": "cdm:item/music_disc_style_1",
+      "predicate": {
+        "cdm:disc_look": 0.4
+      }
+    },
+    {
+      "model": "cdm:item/music_disc_style_2",
+      "predicate": {
+        "cdm:disc_look": 0.6
+      }
+    },
+    {
+      "model": "cdm:item/music_disc_style_3",
+      "predicate": {
+        "cdm:disc_look": 0.8
+      }
+    },
+    {
+      "model": "cdm:item/music_disc_broken",
+      "predicate": {
+        "cdm:disc_broken": 0.5
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "cdm:item/disc_master"
+  }
+}

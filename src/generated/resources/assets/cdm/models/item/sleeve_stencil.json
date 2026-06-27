@@ -1,0 +1,27 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "cdm:item/sleeve_stencil_sticker_1",
+      "predicate": {
+        "cdm:sleeve_look": 0.25
+      }
+    },
+    {
+      "model": "cdm:item/sleeve_stencil_sticker_2",
+      "predicate": {
+        "cdm:sleeve_look": 0.5
+      }
+    },
+    {
+      "model": "cdm:item/sleeve_stencil_sticker_3",
+      "predicate": {
+        "cdm:sleeve_look": 0.75
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "cdm:item/sleeve_stencil",
+    "layer1": "cdm:item/stencil_window"
+  }
+}

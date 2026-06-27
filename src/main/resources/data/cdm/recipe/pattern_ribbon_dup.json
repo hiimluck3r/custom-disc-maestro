@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "cdm:pattern_ribbon" },
+    { "item": "minecraft:diamond" }
+  ],
+  "result": { "id": "cdm:pattern_ribbon", "count": 2 }
+}

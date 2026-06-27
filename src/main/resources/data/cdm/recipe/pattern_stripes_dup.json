@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "cdm:pattern_stripes" },
+    { "item": "minecraft:diamond" }
+  ],
+  "result": { "id": "cdm:pattern_stripes", "count": 2 }
+}

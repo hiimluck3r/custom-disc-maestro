@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cdm:item/disc_vinyl",
+    "layer1": "cdm:item/disc_label_stripes",
+    "layer2": "cdm:item/disc_frame"
+  }
+}

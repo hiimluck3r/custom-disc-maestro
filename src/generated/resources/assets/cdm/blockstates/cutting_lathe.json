@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "cdm:block/cutting_lathe"
+    }
+  }
+}

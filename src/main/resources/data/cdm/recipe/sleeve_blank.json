@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["PPP", "P P", "PPP"],
+  "key": { "P": { "item": "minecraft:paper" } },
+  "result": { "id": "cdm:sleeve_blank", "count": 1 }
+}
