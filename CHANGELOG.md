@@ -4,10 +4,10 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project adheres to
 [Semantic Versioning](https://semver.org/).
 
-## [1.0.0] — 2026-06-27
+## [0.1.0] — 2026-06-27
 
 ### Added
-- Initial release for Minecraft 1.21.1 / NeoForge 21.1.228.
+- Initial public release for Minecraft 1.21.1 / NeoForge 21.1.228.
 - **Cutting Lathe**: in-game note sequencer and Note Block Studio (`.nbs`) import; cut a melody to a
   master disc.
 - **Kupfernickel Bath**: throw a copper ingot + spider eye into a water cauldron to brew the bath;
