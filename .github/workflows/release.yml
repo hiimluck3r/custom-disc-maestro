@@ -37,13 +37,30 @@ jobs:
       - name: Build
         run: ./gradlew build --no-daemon --stacktrace
 
+      # Re-running the workflow (or re-pushing a tag) must not create duplicate store versions:
+      # skip the publish steps when Modrinth already has this exact version number.
+      - name: Check whether this version is already published
+        id: published
+        run: |
+          MOD_VERSION="$(sed -n 's/^mod_version=//p' gradle.properties)"
+          MC_VERSION="$(sed -n 's/^minecraft_version=//p' gradle.properties)"
+          PROJECT_ID="$(sed -n 's/^modrinth_project_id=//p' gradle.properties)"
+          VERSION_NUMBER="${MOD_VERSION}+${MC_VERSION}"
+          if curl -sf "https://api.modrinth.com/v2/project/${PROJECT_ID}/version" \
+              | grep -Fq "\"version_number\":\"${VERSION_NUMBER}\""; then
+            echo "Version ${VERSION_NUMBER} already exists on Modrinth — skipping publish steps."
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       # External publishes run only when the matching token secret is configured.
       - name: Publish to Modrinth
-        if: ${{ env.MODRINTH_TOKEN != '' }}
+        if: ${{ env.MODRINTH_TOKEN != '' && steps.published.outputs.exists == 'false' }}
         run: ./gradlew modrinth --no-daemon --stacktrace
 
       - name: Publish to CurseForge
-        if: ${{ env.CURSEFORGE_TOKEN != '' }}
+        if: ${{ env.CURSEFORGE_TOKEN != '' && steps.published.outputs.exists == 'false' }}
         run: ./gradlew curseforge --no-daemon --stacktrace
 
       - name: Create GitHub Release
