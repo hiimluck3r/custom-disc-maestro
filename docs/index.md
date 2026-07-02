@@ -1,7 +1,7 @@
 # Custom Disc Maestro
 
-A NeoForge mod for **Minecraft 1.21.1** that turns making music discs into a small, hands-on
-manufacturing pipeline — the way real vinyl is made. Compose a tune, cut it to a master, electroform a
+A NeoForge mod that turns making music discs into a small, hands-on manufacturing pipeline — the
+way real vinyl is made. Compose a tune, cut it to a master, electroform a
 pressing matrix in a poisonous green bath, stamp your own records, dye the artwork, and sleeve the
 finished release. Discs wear out as they play — and you can deliberately distress them, too.
 
@@ -164,10 +164,11 @@ were made with. Sound distortion always starts at 50% / 75% / 100% of the config
 
 ## Installation
 
-1. Install [NeoForge **21.1.228**](https://neoforged.net/) for Minecraft **1.21.1**.
-2. Drop the mod JAR into your `mods/` folder.
+1. Install [NeoForge](https://neoforged.net/) for your Minecraft version.
+2. Drop the mod JAR into your `mods/` folder — pick the build matching your Minecraft version on the
+   [Releases](https://github.com/hiimluck3r/custom-disc-maestro/releases) page (each supported
+   Minecraft version lives on its own branch).
 3. Launch the game.
 
-Download JARs from the [Releases](https://github.com/hiimluck3r/custom-disc-maestro/releases) page, or
-grab a development build from the [Actions](https://github.com/hiimluck3r/custom-disc-maestro/actions)
-artifacts.
+Development builds are available from the
+[Actions](https://github.com/hiimluck3r/custom-disc-maestro/actions) artifacts.

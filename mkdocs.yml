@@ -1,8 +1,7 @@
 site_name: Custom Disc Maestro
 site_description: >-
-  A NeoForge mod for Minecraft 1.21.1 that turns making music discs into a hands-on
-  vinyl-manufacturing pipeline — sequencer, cutting lathe, galvanic matrix, record press,
-  wear & tear and album sleeves.
+  A NeoForge Minecraft mod that turns making music discs into a hands-on vinyl-manufacturing
+  pipeline — sequencer, cutting lathe, galvanic matrix, record press, wear & tear and album sleeves.
 site_url: https://hiimluck3r.github.io/custom-disc-maestro/
 repo_url: https://github.com/hiimluck3r/custom-disc-maestro
 repo_name: hiimluck3r/custom-disc-maestro

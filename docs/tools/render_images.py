@@ -387,10 +387,13 @@ def main():
         [("big", PRESS_D_XL, "…freshly pressed"), ("big", PACK_XL, "Packaging Table")],
     ], OUT / "worktables.png")
 
-    # Static copies kept in sync: the mod logo and the lathe editor skin.
+    # The logo is derived from the mod assets — keep it in sync on every build.
     shutil.copyfile(ROOT / "src/main/resources/logo.png", OUT / "logo.png")
-    shutil.copyfile(ROOT / "src/main/resources/assets/cdm/textures/gui/cutting_lathe.png",
-                    OUT / "lathe_editor_skin.png")
+    # The lathe editor picture is a hand-taken in-game screenshot — never overwrite it; the raw
+    # GUI texture is only used as a fallback if the screenshot is missing.
+    skin = OUT / "lathe_editor_skin.png"
+    if not skin.exists():
+        shutil.copyfile(ROOT / "src/main/resources/assets/cdm/textures/gui/cutting_lathe.png", skin)
     print("done")
 
 if __name__ == "__main__":
