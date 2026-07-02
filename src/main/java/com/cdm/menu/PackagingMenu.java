@@ -24,7 +24,6 @@ public class PackagingMenu extends AbstractContainerMenu {
     @Nullable
     private final PackagingTableBlockEntity be;
     private final BlockPos pos;
-    private final Player player;
 
     // Typed slot handles so the screen doesn't depend on raw slot ordering.
     private final Slot sleeveSlot;
@@ -41,11 +40,10 @@ public class PackagingMenu extends AbstractContainerMenu {
     public PackagingMenu(int id, Inventory inv, @Nullable PackagingTableBlockEntity be) {
         super(ModMenus.PACKAGING.get(), id);
         this.be = be;
-        this.player = inv.player;
         this.pos = be != null ? be.getBlockPos() : BlockPos.ZERO;
         IItemHandler handler = be != null ? be.getItems() : new ItemStackHandler(TE_SLOTS);
 
-        // No record slot — packaging a disc is done by right-clicking the sleeve (SleeveMenu).
+        // No record slot — records are sleeved with bundle-style clicks on the sleeve item itself.
         this.sleeveSlot = this.addSlot(new SlotItemHandler(handler, PackagingTableBlockEntity.SLOT_SLEEVE, 8, 20));
         this.addSlot(new SlotItemHandler(handler, PackagingTableBlockEntity.SLOT_OUTPUT, 150, 20) {
             @Override

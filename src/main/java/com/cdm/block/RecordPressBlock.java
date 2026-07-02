@@ -11,12 +11,25 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 /** Opens the Record Press GUI where a galvanic matrix + blank are pressed into a designed disc. */
-public class RecordPressBlock extends Block implements EntityBlock {
+public class RecordPressBlock extends WorktableBlock implements EntityBlock {
+    /** True while a freshly pressed record waits in the output, shown on the platen. */
+    public static final BooleanProperty HAS_DISC = BlockStateProperties.HAS_RECORD;
+
     public RecordPressBlock(Properties properties) {
         super(properties);
+        registerDefaultState(defaultBlockState().setValue(HAS_DISC, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(HAS_DISC);
     }
 
     @Override

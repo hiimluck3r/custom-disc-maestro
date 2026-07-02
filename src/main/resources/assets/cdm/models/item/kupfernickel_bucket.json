@@ -1,1 +1,7 @@
-{ "parent": "minecraft:item/generated", "textures": { "layer0": "cdm:item/kupfernickel_bucket" } }
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/bucket",
+    "layer1": "cdm:item/kupfernickel_bucket_fill"
+  }
+}

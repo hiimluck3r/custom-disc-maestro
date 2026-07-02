@@ -1,14 +1,14 @@
 package com.cdm.audio;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.cdm.data.NoteSequence;
 import com.cdm.data.RecordContent;
 import com.cdm.registry.ModComponents;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -32,13 +32,17 @@ public final class DiscPlayback {
             new NoteSequence.Note(30, 0, 6), new NoteSequence.Note(40, 6, 18)));
 
     /** A melody sanitised once and indexed by tick, so each playback tick is O(notes-at-this-tick). */
-    public record Prepared(int lengthTicks, Map<Integer, List<NoteSequence.Note>> notesByTick) {}
+    public record Prepared(int lengthTicks, Int2ObjectMap<List<NoteSequence.Note>> notesByTick) {}
 
-    // Single-slot memo: levels tick sequentially on the server thread, so caching the last prepared
-    // melody (keyed by the stored sequence's identity) avoids re-sanitising and re-indexing the same
-    // disc on every one of its playback ticks. Server-thread only; the mixin never calls us client-side.
-    private static NoteSequence cachedRaw;
-    private static Prepared cachedPrepared;
+    // Identity-keyed memo so a jukebox doesn't re-sanitise and re-index its disc's melody on every
+    // playback tick. Several slots (round-robin eviction) so jukeboxes playing DIFFERENT discs at the
+    // same time don't evict each other every tick. Server-thread only; the mixin never calls us
+    // client-side. Identity keys work because the component instance is stable while a disc sits in
+    // the jukebox; a reload just repopulates a slot once.
+    private static final int CACHE_SLOTS = 16;
+    private static final NoteSequence[] cachedRaw = new NoteSequence[CACHE_SLOTS];
+    private static final Prepared[] cachedPrepared = new Prepared[CACHE_SLOTS];
+    private static int cacheEvict;
 
     private static NoteSequence rawMelody(ItemStack disc) {
         RecordContent content = disc.get(ModComponents.RECORD_CONTENT.get());
@@ -52,20 +56,28 @@ public final class DiscPlayback {
     /** Resolve, validate and index a disc's melody. Cached across ticks while the disc is unchanged. */
     public static Prepared prepare(ItemStack disc) {
         NoteSequence raw = rawMelody(disc);
-        if (raw == cachedRaw && cachedPrepared != null) {
-            return cachedPrepared;
+        for (int i = 0; i < CACHE_SLOTS; i++) {
+            if (cachedRaw[i] == raw) {
+                return cachedPrepared[i];
+            }
         }
         NoteSequence safe = NoteSequenceValidator.sanitize(raw);
         if (safe.notes().isEmpty()) {
             safe = TEST_MELODY;
         }
-        Map<Integer, List<NoteSequence.Note>> byTick = new HashMap<>();
+        Int2ObjectMap<List<NoteSequence.Note>> byTick = new Int2ObjectOpenHashMap<>();
         for (NoteSequence.Note n : safe.notes()) {
-            byTick.computeIfAbsent(n.tick(), k -> new ArrayList<>(2)).add(n);
+            List<NoteSequence.Note> at = byTick.get(n.tick());
+            if (at == null) {
+                at = new ArrayList<>(2);
+                byTick.put(n.tick(), at);
+            }
+            at.add(n);
         }
         Prepared prepared = new Prepared(safe.lengthTicks(), byTick);
-        cachedRaw = raw;
-        cachedPrepared = prepared;
+        cachedRaw[cacheEvict] = raw;
+        cachedPrepared[cacheEvict] = prepared;
+        cacheEvict = (cacheEvict + 1) % CACHE_SLOTS;
         return prepared;
     }
 

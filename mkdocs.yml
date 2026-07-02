@@ -1,0 +1,51 @@
+site_name: Custom Disc Maestro
+site_description: >-
+  A NeoForge mod for Minecraft 1.21.1 that turns making music discs into a hands-on
+  vinyl-manufacturing pipeline — sequencer, cutting lathe, galvanic matrix, record press,
+  wear & tear and album sleeves.
+site_url: https://hiimluck3r.github.io/custom-disc-maestro/
+repo_url: https://github.com/hiimluck3r/custom-disc-maestro
+repo_name: hiimluck3r/custom-disc-maestro
+copyright: MIT License — free to use, modify and redistribute.
+
+docs_dir: docs
+exclude_docs: |
+  tools/
+
+theme:
+  name: material
+  logo: img/logo.png
+  favicon: img/logo.png
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: amber
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: amber
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - toc.integrate
+
+nav:
+  - Guide (English): index.md
+  - Руководство (Русский): ru.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.keys

@@ -29,16 +29,19 @@ public final class SleeveOps {
         return stack.has(DataComponents.JUKEBOX_PLAYABLE);
     }
 
+    // No-copy emptiness check: it feeds the sleeve_filled model predicate, which runs every frame
+    // for every visible sleeve. Our write path only ever stores the record in slot 0.
     public static boolean hasContainedRecord(ItemStack sleeve) {
-        return !containedRecord(sleeve).isEmpty();
+        ItemContainerContents contents = sleeve.get(ModComponents.CONTAINED_RECORD.get());
+        return contents != null && contents.nonEmptyItems().iterator().hasNext();
     }
 
     // The contained disc is stored via vanilla's ItemContainerContents (a raw ItemStack can't be a data
-    // component value — it has no equals/hashCode, which NeoForge rejects on set).
+    // component value — it has no equals/hashCode, which NeoForge rejects on set). copyOne() returns
+    // EMPTY for an empty container and a single defensive copy of slot 0 otherwise.
     public static ItemStack containedRecord(ItemStack sleeve) {
         ItemContainerContents contents = sleeve.get(ModComponents.CONTAINED_RECORD.get());
-        return contents == null ? ItemStack.EMPTY : contents.getSlots() == 0 ? ItemStack.EMPTY
-                : contents.getStackInSlot(0).copy();
+        return contents == null ? ItemStack.EMPTY : contents.copyOne();
     }
 
     public static void setContainedRecord(ItemStack sleeve, ItemStack record) {

@@ -30,9 +30,11 @@ public class DiscBreakRecipe implements SmithingRecipe {
     public ItemStack assemble(SmithingRecipeInput input, HolderLookup.Provider registries) {
         ItemStack out = input.base().copy();
         out.setCount(1);
-        int wear = out.getDamageValue();
-        int next = wear < 50 ? 50 : wear < 75 ? 75 : 100;
-        out.setDamageValue(Math.min(out.getMaxDamage(), next));
+        int max = out.getMaxDamage();
+        float worn = (float) out.getDamageValue() / max;
+        // Stages are percentages of the (configurable) wear budget: 50% -> 75% -> fully worn.
+        int next = worn < 0.5F ? Math.round(max * 0.5F) : worn < 0.75F ? Math.round(max * 0.75F) : max;
+        out.setDamageValue(Math.min(max, next));
         return out;
     }
 

@@ -22,13 +22,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 /**
- * Backs the Packaging Table GUI. Slots: 0 = sleeve being worked on, 1 = record to insert/extract,
- * 2 = stencil output. All mutating actions are driven by validated server-side requests
- * (PackagingActionPayload), never directly by the client.
+ * Backs the Packaging Table GUI. Slots: 0 = sleeve being worked on, 2 = stencil output, 3-5 = dyes
+ * and pattern template. Slot 1 is a retired record slot kept in the layout so old saves load into
+ * the same indices (its contents still drop on break; nothing can be inserted). All mutating actions
+ * are driven by validated server-side requests (PackagingActionPayload), never directly by the client.
  */
 public class PackagingTableBlockEntity extends BlockEntity implements MenuProvider {
     public static final int SLOT_SLEEVE = 0;
-    public static final int SLOT_RECORD = 1;
     public static final int SLOT_OUTPUT = 2;
     public static final int SLOT_BG_DYE = 3;
     public static final int SLOT_TEMPLATE = 4;
@@ -47,10 +47,9 @@ public class PackagingTableBlockEntity extends BlockEntity implements MenuProvid
         public boolean isItemValid(int slot, ItemStack stack) {
             return switch (slot) {
                 case SLOT_SLEEVE -> isSleeve(stack);
-                case SLOT_RECORD -> SleeveOps.isRecord(stack);
                 case SLOT_BG_DYE, SLOT_PATTERN_DYE -> Patterns.isDye(stack);
                 case SLOT_TEMPLATE -> Patterns.isTemplate(stack);
-                default -> false; // output slot is filled by the BE only
+                default -> false; // output + retired record slot are never player-fillable
             };
         }
     };

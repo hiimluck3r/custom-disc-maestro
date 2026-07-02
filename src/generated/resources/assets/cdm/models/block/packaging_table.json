@@ -1,6 +1,9 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/orientable_with_bottom",
   "textures": {
-    "all": "cdm:block/packaging_table"
+    "bottom": "minecraft:block/spruce_planks",
+    "front": "cdm:block/packaging_table_front",
+    "side": "cdm:block/packaging_table_side",
+    "top": "cdm:block/packaging_table_top"
   }
 }

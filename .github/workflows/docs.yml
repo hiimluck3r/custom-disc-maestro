@@ -1,0 +1,68 @@
+name: Docs
+
+# Builds the documentation site (guide pages + images rendered from the mod's actual textures)
+# and deploys it to GitHub Pages. Images are re-rendered on every run, so the site always matches
+# the textures in the repository.
+on:
+  push:
+    branches: [master]
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "src/main/resources/assets/cdm/textures/**"
+      - "src/main/resources/logo.png"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install fonts and Python tooling
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q fonts-dejavu-core
+          pip install --quiet pillow mkdocs-material
+
+      # Downloads the Minecraft client jar from Mojang's public CDN (cached between runs).
+      - name: Cache Minecraft client jar
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/cdm-docs
+          key: mc-client-1.21.1
+
+      - name: Render documentation images from mod assets
+        run: python docs/tools/render_images.py
+
+      - name: Build site
+        run: mkdocs build --strict
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

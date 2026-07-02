@@ -16,9 +16,8 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 /**
- * Blocks for the (deliberately lean) vinyl workflow. Only two custom blocks: the Cutting Lathe where
- * you compose/record a disc, and the Packaging Table for sleeve design. Playback uses the vanilla
- * jukebox and "plating" uses a vanilla cauldron — no bespoke blocks for those.
+ * Blocks for the vinyl workflow: the three worktables (lathe, press, packaging) plus the kupfernickel
+ * fluid and its cauldron. Playback stays in the vanilla jukebox — no bespoke block for it.
  */
 public final class ModBlocks {
     private ModBlocks() {}
@@ -44,7 +43,7 @@ public final class ModBlocks {
     public static final DeferredBlock<CuttingLatheBlock> CUTTING_LATHE =
             BLOCKS.registerBlock("cutting_lathe", CuttingLatheBlock::new, machine());
 
-    // Sleeve design + record insert/extract + stencil.
+    // Sleeve design + stencil baking (records are sleeved by right-clicking the sleeve).
     public static final DeferredBlock<PackagingTableBlock> PACKAGING_TABLE =
             BLOCKS.registerBlock("packaging_table", PackagingTableBlock::new, appliance());
 

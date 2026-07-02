@@ -12,9 +12,6 @@ import net.minecraft.network.codec.StreamCodec;
 /**
  * The audio "groove" carried by a record as it flows through the pipeline (master -> galvanic matrix ->
  * pressed record). Holds both sides plus the playback speed.
- *
- * <p>A {@link Side} references an {@link AudioRef} once the audio has been rendered/baked to PCM
- * (at cut time). Before that it may be empty (e.g. a master tape still pointing at a sequence).
  */
 public record RecordContent(Side sideA, Side sideB, int rpm) {
 

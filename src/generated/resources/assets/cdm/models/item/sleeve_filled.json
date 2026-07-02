@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cdm:item/disc_peek",
+    "layer1": "cdm:item/sleeve_base"
+  }
+}

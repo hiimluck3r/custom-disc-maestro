@@ -20,9 +20,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
  */
 public record PackagingActionPayload(BlockPos pos, int action, String title) implements CustomPacketPayload {
     public static final int APPLY_DESIGN = 0;
-    public static final int INSERT_RECORD = 1;
-    public static final int EXTRACT_RECORD = 2;
-    public static final int MAKE_STENCIL = 3;
+    public static final int MAKE_STENCIL = 3; // 1/2 were insert/extract, retired for RMB packaging
 
     public static final Type<PackagingActionPayload> TYPE =
             new Type<>(ResourceLocation.fromNamespaceAndPath(CDMMod.MODID, "packaging_action"));
@@ -48,7 +46,7 @@ public record PackagingActionPayload(BlockPos pos, int action, String title) imp
             switch (msg.action()) {
                 case APPLY_DESIGN -> be.applyDesign(msg.title());
                 case MAKE_STENCIL -> be.makeStencil();
-                default -> { } // insert/extract removed — packaging a disc is done by right-clicking the sleeve
+                default -> { }
             }
         });
     }

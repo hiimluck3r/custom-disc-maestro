@@ -15,6 +15,7 @@ import com.mojang.logging.LogUtils;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -28,6 +29,7 @@ public class CDMMod {
 
     public CDMMod(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
+        modContainer.registerConfig(ModConfig.Type.SERVER, CDMConfig.SPEC);
 
         ModComponents.COMPONENTS.register(modEventBus);
         ModFluids.FLUID_TYPES.register(modEventBus);

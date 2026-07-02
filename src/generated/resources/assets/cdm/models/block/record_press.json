@@ -1,6 +1,9 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/orientable_with_bottom",
   "textures": {
-    "all": "cdm:block/record_press"
+    "bottom": "cdm:block/record_press_side",
+    "front": "cdm:block/record_press_front",
+    "side": "cdm:block/record_press_side",
+    "top": "cdm:block/record_press_top"
   }
 }

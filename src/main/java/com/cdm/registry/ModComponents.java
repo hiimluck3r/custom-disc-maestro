@@ -12,7 +12,6 @@ import com.cdm.data.SleeveDesign;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -53,12 +52,9 @@ public final class ModComponents {
     public static final Supplier<DataComponentType<ItemContainerContents>> CONTAINED_RECORD = register("contained_record",
             b -> b.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC));
 
-    /** Whether a packaged sleeve is shrink-wrapped (read-only until opened). */
-    public static final Supplier<DataComponentType<Boolean>> SHRINK_WRAPPED = register("shrink_wrapped",
-            b -> b.persistent(com.mojang.serialization.Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
-
-    /** Groove wear (0..100) baked into a matrix from the master it was grown off, so pressed records
-     *  inherit the master's degradation (a broken master makes a matrix that stamps broken records). */
+    /** Groove wear baked into a matrix from the master it was grown off, as a PERCENTAGE (0..100) of
+     *  the master's wear budget, so pressed records inherit the degradation whatever maxima the admin
+     *  configured. (Matrices from 0.1.x stored absolute damage of a 100-max master — same scale.) */
     public static final Supplier<DataComponentType<Integer>> BAKED_WEAR = register("baked_wear",
             b -> b.persistent(com.mojang.serialization.Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 

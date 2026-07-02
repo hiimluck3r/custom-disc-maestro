@@ -19,8 +19,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * Packaging Table GUI (slot-driven): put a background dye, a pattern template and a pattern dye to style
- * a sleeve (with a live preview), apply it, insert/extract a record, or bake a reusable stencil. Colours
- * come from the dyes and the pattern from the template — consumed on Apply.
+ * a sleeve (with a live preview), apply it, or bake a reusable stencil. Colours come from the dyes and
+ * the pattern from the template — consumed on Apply. Records go in by right-clicking the sleeve.
  */
 public class PackagingScreen extends AbstractContainerScreen<PackagingMenu> {
     private static final int PREVIEW_X = 118, PREVIEW_Y = 19, ACT_Y = 40, TITLE_Y = 58;
@@ -34,6 +34,13 @@ public class PackagingScreen extends AbstractContainerScreen<PackagingMenu> {
             4, Component.translatable("cdm.packaging.hint.pattern"));
 
     private EditBox titleBox;
+
+    // Ghost hint icons + the live-preview sleeve, built once and reused every frame.
+    private final ItemStack sleeveGhost = new ItemStack(ModItems.SLEEVE_BLANK.get());
+    private final ItemStack bgDyeGhost = new ItemStack(Items.WHITE_DYE);
+    private final ItemStack templateGhost = new ItemStack(ModItems.PATTERN_STRIPES.get());
+    private final ItemStack patternDyeGhost = new ItemStack(Items.BLACK_DYE);
+    private final ItemStack preview = new ItemStack(ModItems.SLEEVE.get());
 
     public PackagingScreen(PackagingMenu menu, Inventory inv, Component title) {
         super(menu, inv, title);
@@ -110,13 +117,12 @@ public class PackagingScreen extends AbstractContainerScreen<PackagingMenu> {
         for (int c = 0; c < 9; c++) SlotIcons.drawSlot(gg, x + 8 + c * 18, y + 166);
 
         // Hint icons so it's clear what each slot wants.
-        if (menu.sleeveItem().isEmpty()) SlotIcons.ghost(gg, new ItemStack(ModItems.SLEEVE_BLANK.get()), x + 8, y + 20);
-        if (menu.bgDyeItem().isEmpty()) SlotIcons.ghost(gg, new ItemStack(Items.WHITE_DYE), x + 8, y + 76);
-        if (menu.templateItem().isEmpty()) SlotIcons.ghost(gg, new ItemStack(ModItems.PATTERN_STRIPES.get()), x + 46, y + 76);
-        if (menu.patternDyeItem().isEmpty()) SlotIcons.ghost(gg, new ItemStack(Items.BLACK_DYE), x + 84, y + 76);
+        if (menu.sleeveItem().isEmpty()) SlotIcons.ghost(gg, sleeveGhost, x + 8, y + 20);
+        if (menu.bgDyeItem().isEmpty()) SlotIcons.ghost(gg, bgDyeGhost, x + 8, y + 76);
+        if (menu.templateItem().isEmpty()) SlotIcons.ghost(gg, templateGhost, x + 46, y + 76);
+        if (menu.patternDyeItem().isEmpty()) SlotIcons.ghost(gg, patternDyeGhost, x + 84, y + 76);
 
         // Live preview of the designed sleeve.
-        ItemStack preview = new ItemStack(ModItems.SLEEVE.get());
         preview.set(ModComponents.SLEEVE_DESIGN.get(), previewDesign());
         gg.renderItem(preview, x + PREVIEW_X, y + PREVIEW_Y);
     }

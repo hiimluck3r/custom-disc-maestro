@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "cdm:item/disc_broken"
+    "layer0": "cdm:item/disc_master_broken"
   }
 }

@@ -11,12 +11,25 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 /** Opens the Cutting Lathe GUI where players compose a melody and cut it onto a disc. */
-public class CuttingLatheBlock extends Block implements EntityBlock {
+public class CuttingLatheBlock extends WorktableBlock implements EntityBlock {
+    /** True while a disc (blank or cut master) sits in the lathe, shown on the platter. */
+    public static final BooleanProperty HAS_DISC = BlockStateProperties.HAS_RECORD;
+
     public CuttingLatheBlock(Properties properties) {
         super(properties);
+        registerDefaultState(defaultBlockState().setValue(HAS_DISC, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(HAS_DISC);
     }
 
     @Override

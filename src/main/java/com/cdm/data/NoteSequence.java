@@ -12,8 +12,6 @@ import net.minecraft.network.codec.StreamCodec;
 /**
  * A composed melody, stored compactly on a record and played back through Minecraft's own note-block
  * sounds (positional, multiplayer, no external dependency) — exactly like vanilla note blocks.
- *
- * <p>This is the priority-1 music source. Imported audio files use {@link AudioRef} instead.
  */
 public record NoteSequence(int lengthTicks, List<Note> notes) {
     public static final NoteSequence EMPTY = new NoteSequence(0, List.of());

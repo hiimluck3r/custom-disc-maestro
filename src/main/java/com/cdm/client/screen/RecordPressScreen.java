@@ -33,6 +33,15 @@ public class RecordPressScreen extends AbstractContainerScreen<RecordPressMenu> 
             RecordPressBlockEntity.SLOT_TEMPLATE, Component.translatable("cdm.press.hint.template"),
             RecordPressBlockEntity.SLOT_PATTERN_DYE, Component.translatable("cdm.press.hint.pattern_dye"));
 
+    // Ghost hint icons + the live-preview disc, built once and reused every frame (renderBg runs each
+    // render pass; re-creating these stacks there is needless allocation).
+    private final ItemStack matrixGhost = new ItemStack(ModItems.MATRIX.get());
+    private final ItemStack blankGhost = new ItemStack(Items.BLACKSTONE);
+    private final ItemStack vinylDyeGhost = new ItemStack(Items.BLACK_DYE);
+    private final ItemStack templateGhost = new ItemStack(ModItems.PATTERN_STRIPES.get());
+    private final ItemStack patternDyeGhost = new ItemStack(Items.WHITE_DYE);
+    private final ItemStack preview = new ItemStack(ModItems.MUSIC_DISC.get());
+
     public RecordPressScreen(RecordPressMenu menu, Inventory inv, Component title) {
         super(menu, inv, title);
         this.imageWidth = 176;
@@ -80,14 +89,13 @@ public class RecordPressScreen extends AbstractContainerScreen<RecordPressMenu> 
         for (int c = 0; c < 9; c++) drawSlot(gg, x + 8 + c * 18, y + 148);
 
         // Hint icons for what each input slot wants.
-        ghostIfEmpty(gg, RecordPressBlockEntity.SLOT_MATRIX, new ItemStack(ModItems.MATRIX.get()), x + 8, y + 18);
-        ghostIfEmpty(gg, RecordPressBlockEntity.SLOT_BLANK, new ItemStack(Items.BLACKSTONE), x + 30, y + 18);
-        ghostIfEmpty(gg, RecordPressBlockEntity.SLOT_VINYL_DYE, new ItemStack(Items.BLACK_DYE), x + 8, y + 52);
-        ghostIfEmpty(gg, RecordPressBlockEntity.SLOT_TEMPLATE, new ItemStack(ModItems.PATTERN_STRIPES.get()), x + 46, y + 52);
-        ghostIfEmpty(gg, RecordPressBlockEntity.SLOT_PATTERN_DYE, new ItemStack(Items.WHITE_DYE), x + 84, y + 52);
+        ghostIfEmpty(gg, RecordPressBlockEntity.SLOT_MATRIX, matrixGhost, x + 8, y + 18);
+        ghostIfEmpty(gg, RecordPressBlockEntity.SLOT_BLANK, blankGhost, x + 30, y + 18);
+        ghostIfEmpty(gg, RecordPressBlockEntity.SLOT_VINYL_DYE, vinylDyeGhost, x + 8, y + 52);
+        ghostIfEmpty(gg, RecordPressBlockEntity.SLOT_TEMPLATE, templateGhost, x + 46, y + 52);
+        ghostIfEmpty(gg, RecordPressBlockEntity.SLOT_PATTERN_DYE, patternDyeGhost, x + 84, y + 52);
 
         // Live preview of the pressed disc.
-        ItemStack preview = new ItemStack(ModItems.MUSIC_DISC.get());
         preview.set(ModComponents.DISC_DESIGN.get(), previewDesign());
         gg.renderItem(preview, x + PREVIEW_X, y + PREVIEW_Y);
     }

@@ -1,5 +1,13 @@
 {
   "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "cdm:item/sleeve_blank_filled",
+      "predicate": {
+        "cdm:sleeve_filled": 0.5
+      }
+    }
+  ],
   "textures": {
     "layer0": "cdm:item/sleeve_blank"
   }

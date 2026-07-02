@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "cdm:block/cutting_lathe_side",
+    "front": "cdm:block/cutting_lathe_front",
+    "side": "cdm:block/cutting_lathe_side",
+    "top": "cdm:block/cutting_lathe_top_disc"
+  }
+}

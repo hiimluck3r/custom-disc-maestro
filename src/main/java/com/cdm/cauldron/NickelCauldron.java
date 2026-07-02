@@ -1,5 +1,6 @@
 package com.cdm.cauldron;
 
+import com.cdm.CDMConfig;
 import com.cdm.data.DiscMeta;
 import com.cdm.data.RecordContent;
 import com.cdm.registry.ModBlocks;
@@ -7,6 +8,7 @@ import com.cdm.registry.ModComponents;
 import com.cdm.registry.ModItems;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -74,14 +76,16 @@ public final class NickelCauldron {
         if (!level.isClientSide) {
             ItemStack matrix = new ItemStack(ModItems.MATRIX.get());
             matrix.set(ModComponents.RECORD_CONTENT.get(), content);
+            matrix.set(DataComponents.MAX_DAMAGE, CDMConfig.MATRIX_USES.get()); // admin-configured presses
             DiscMeta meta = disc.get(ModComponents.DISC_META.get());
             if (meta != null) {
                 matrix.set(ModComponents.DISC_META.get(), meta);
             }
-            // Bake the master's groove wear in, so a worn/broken master makes a matrix that stamps
-            // equally worn/broken records.
+            // Bake the master's groove wear in (as a percentage, so differently-configured maxima
+            // still line up): a worn/broken master makes a matrix that stamps equally worn records.
             if (disc.isDamageableItem() && disc.getDamageValue() > 0) {
-                matrix.set(ModComponents.BAKED_WEAR.get(), disc.getDamageValue());
+                matrix.set(ModComponents.BAKED_WEAR.get(),
+                        Math.round(100.0F * disc.getDamageValue() / disc.getMaxDamage()));
             }
             player.getInventory().placeItemBackInInventory(matrix); // disc itself is kept
             LayeredCauldronBlock.lowerFillLevel(state, level, pos); // the bath is spent a little

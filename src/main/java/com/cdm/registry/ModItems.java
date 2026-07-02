@@ -26,26 +26,25 @@ public final class ModItems {
         return ITEMS.registerSimpleItem(name, new Item.Properties());
     }
 
-    // Block items.
     public static final DeferredItem<?> CUTTING_LATHE_ITEM = ITEMS.registerSimpleBlockItem(ModBlocks.CUTTING_LATHE);
     public static final DeferredItem<?> PACKAGING_TABLE_ITEM = ITEMS.registerSimpleBlockItem(ModBlocks.PACKAGING_TABLE);
     public static final DeferredItem<?> RECORD_PRESS_ITEM = ITEMS.registerSimpleBlockItem(ModBlocks.RECORD_PRESS);
 
-    // The blank medium you record onto (crafted from vanilla materials).
     public static final DeferredItem<Item> BLANK_DISC = simple("blank_disc");
 
-    // The finished, jukebox-playable disc; carries its note sequence + author/title metadata. Durability
-    // models groove WEAR: every play in a jukebox costs 1 point; at 0 the disc is "broken" (distorted
-    // audio + cracked texture). MAX_WEAR plays before it breaks.
-    public static final int MAX_WEAR = 100;
+    // Durability models groove WEAR: every jukebox play costs 1 point; a fully worn disc is "broken"
+    // (distorted audio + cracked texture) but never destroyed. This is only the REGISTRATION fallback
+    // (e.g. creative-menu stacks) — the lathe/press stamp the admin-configured maximum from CDMConfig
+    // onto every disc they produce via the max_damage component.
+    public static final int MAX_WEAR = 32;
     public static final DeferredItem<MusicDiscItem> MUSIC_DISC = ITEMS.register("music_disc",
             () -> new MusicDiscItem(new Item.Properties().rarity(Rarity.RARE)
                     .durability(MAX_WEAR)
                     .jukeboxPlayable(ModJukeboxSongs.CUSTOM)));
 
-    // Galvanic MATRIX: the metal negative grown off a master in the nickel bath. Mounted in the press to
-    // stamp a run of records; wears out after MATRIX_USES presses (durability). Shows the song it carries.
-    public static final int MATRIX_USES = 10;
+    // The metal negative grown off a master in the kupfernickel bath. Registration fallback only —
+    // electroforming stamps the admin-configured press count from CDMConfig onto each matrix.
+    public static final int MATRIX_USES = 3;
     public static final DeferredItem<MatrixItem> MATRIX = ITEMS.register("matrix",
             () -> new MatrixItem(new Item.Properties().durability(MATRIX_USES)));
 
@@ -57,13 +56,11 @@ public final class ModItems {
     public static final DeferredItem<com.cdm.item.StencilItem> SLEEVE_STENCIL = ITEMS.register("sleeve_stencil",
             () -> new com.cdm.item.StencilItem(new Item.Properties()));
 
-    // Pattern templates (like armour-trim templates). Drop when a skeleton kills a skeleton; used (and
-    // consumed) in the Press / Packaging Table to stamp a pattern onto a disc or sleeve. Index 1..3.
+    // Pattern templates: drop when a skeleton kills a skeleton; consumed by the Press / Packaging Table.
     public static final DeferredItem<Item> PATTERN_STRIPES = simple("pattern_stripes");
     public static final DeferredItem<Item> PATTERN_RIBBON = simple("pattern_ribbon");
     public static final DeferredItem<Item> PATTERN_DOTS = simple("pattern_dots");
 
-    // Bucket of the kupfernickel plating bath fluid.
     public static final DeferredItem<BucketItem> NICKEL_BUCKET = ITEMS.register("kupfernickel_bucket",
             () -> new BucketItem(ModFluids.NICKEL.get(), new Item.Properties()
                     .craftRemainder(Items.BUCKET).stacksTo(1)));

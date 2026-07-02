@@ -1,6 +1,8 @@
 package com.cdm.block.entity;
 
+import com.cdm.CDMConfig;
 import com.cdm.audio.NoteSequenceValidator;
+import com.cdm.block.CuttingLatheBlock;
 import com.cdm.data.DiscMeta;
 import com.cdm.data.NoteSequence;
 import com.cdm.data.RecordContent;
@@ -11,6 +13,7 @@ import com.cdm.registry.ModItems;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -39,6 +42,7 @@ public class CuttingLatheBlockEntity extends BlockEntity implements MenuProvider
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
+            syncDiscOnPlatter();
         }
 
         @Override
@@ -46,6 +50,17 @@ public class CuttingLatheBlockEntity extends BlockEntity implements MenuProvider
             return slot == SLOT_BLANK && stack.is(ModItems.BLANK_DISC.get());
         }
     };
+
+    /** Mirrors "a disc sits in the lathe" into the HAS_DISC blockstate so it shows on the platter. */
+    private void syncDiscOnPlatter() {
+        if (level == null || level.isClientSide) return;
+        BlockState state = getBlockState();
+        if (!state.hasProperty(CuttingLatheBlock.HAS_DISC)) return;
+        boolean hasDisc = !items.getStackInSlot(SLOT_BLANK).isEmpty() || !items.getStackInSlot(SLOT_OUTPUT).isEmpty();
+        if (state.getValue(CuttingLatheBlock.HAS_DISC) != hasDisc) {
+            level.setBlockAndUpdate(worldPosition, state.setValue(CuttingLatheBlock.HAS_DISC, hasDisc));
+        }
+    }
 
     public CuttingLatheBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CUTTING_LATHE.get(), pos, state);
@@ -66,6 +81,7 @@ public class CuttingLatheBlockEntity extends BlockEntity implements MenuProvider
                 new RecordContent(RecordContent.Side.ofNotes(safe, safeMeta.title()), RecordContent.Side.EMPTY, 33));
         disc.set(ModComponents.DISC_META.get(), safeMeta);
         disc.set(ModComponents.MASTER.get(), true); // a lathe cut is a master; only masters electroform
+        disc.set(DataComponents.MAX_DAMAGE, CDMConfig.MASTER_USES.get()); // admin-configured wear budget
         return disc;
     }
 

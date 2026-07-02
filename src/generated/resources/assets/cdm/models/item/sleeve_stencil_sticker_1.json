@@ -3,6 +3,6 @@
   "textures": {
     "layer0": "cdm:item/sleeve_stencil",
     "layer1": "cdm:item/stencil_window",
-    "layer2": "cdm:item/sleeve_sticker_stripes"
+    "layer2": "cdm:item/stencil_sticker_1"
   }
 }

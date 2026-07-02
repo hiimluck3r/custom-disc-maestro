@@ -92,6 +92,9 @@ public class CuttingLatheScreen extends AbstractContainerScreen<CuttingLatheMenu
     private EditBox titleBox, authorBox, albumBox;
     private Button playButton;
 
+    // Ghost hint icon for the empty blank-disc slot, built once and reused every frame.
+    private final ItemStack blankGhost = new ItemStack(ModItems.BLANK_DISC.get());
+
     public CuttingLatheScreen(CuttingLatheMenu menu, Inventory inv, Component title) {
         super(menu, inv, title);
         this.imageWidth = GUI_W;
@@ -492,7 +495,7 @@ public class CuttingLatheScreen extends AbstractContainerScreen<CuttingLatheMenu
         SlotIcons.drawSlot(gg, outX, outY);
         gg.drawString(this.font, ">", blankX + 20, blankY + 4, 0xFFB8C0D0, false);
         if (!menu.slots.get(CuttingLatheBlockEntity.SLOT_BLANK).hasItem()) {
-            SlotIcons.ghost(gg, new ItemStack(ModItems.BLANK_DISC.get()), blankX, blankY);
+            SlotIcons.ghost(gg, blankGhost, blankX, blankY);
         }
 
         for (int r = 0; r < 3; r++) {
@@ -525,7 +528,7 @@ public class CuttingLatheScreen extends AbstractContainerScreen<CuttingLatheMenu
         if (ry >= PAL_Y && ry < PAL_Y + PAL_SH) {
             int idx = (int) Math.floor((rx - PAL_X) / (double) PAL_STEP);
             if (idx >= 0 && idx < 16 && rx < PAL_X + 16 * PAL_STEP) {
-                gg.renderTooltip(this.font, Component.literal(INSTRUMENT_NAMES[idx]), mouseX, mouseY);
+                gg.renderTooltip(this.font, instrumentName(idx), mouseX, mouseY);
             }
         }
         this.renderTooltip(gg, mouseX, mouseY);
@@ -535,16 +538,16 @@ public class CuttingLatheScreen extends AbstractContainerScreen<CuttingLatheMenu
     @Override
     protected void renderLabels(GuiGraphics gg, int mouseX, int mouseY) {
         gg.drawString(this.font, this.title, GRID_X, 5, 0xFFE8E8E8, false);
-        gg.drawString(this.font, Component.literal(INSTRUMENT_NAMES[currentInstrument]), PAL_X, PAL_Y - 10, 0xFFE8E8E8, false);
+        gg.drawString(this.font, instrumentName(currentInstrument), PAL_X, PAL_Y - 10, 0xFFE8E8E8, false);
+        // Offset clears the longest localised instrument names (e.g. "Коровий колокольчик").
         gg.drawString(this.font, Component.translatable("cdm.lathe.notes", notes.size()),
-                PAL_X + 110, PAL_Y - 10, 0xFFB8C0D0, false);
+                PAL_X + 128, PAL_Y - 10, 0xFFB8C0D0, false);
         gg.drawString(this.font, Component.translatable("cdm.lathe.tempo", bpm), BPM_LABEL_X, CTRL_Y + 3, 0xFFE8E8E8, false);
         gg.drawString(this.font, this.playerInventoryTitle, CuttingLatheMenu.INV_X, CuttingLatheMenu.INV_Y - 10, 0xFFB8C0D0, false);
     }
 
-    /** Display names for note-block instruments 0..15 (matches {@link NoteInstruments} order). */
-    private static final String[] INSTRUMENT_NAMES = {
-            "Harp", "Bass Drum", "Snare", "Hat", "Bass", "Flute", "Bell", "Guitar",
-            "Chime", "Xylophone", "Iron Xylophone", "Cow Bell", "Didgeridoo", "Bit", "Banjo", "Pling"
-    };
+    /** Localised name for a note-block instrument 0..15 (matches {@link NoteInstruments} order). */
+    private static Component instrumentName(int instrument) {
+        return Component.translatable("cdm.instrument." + instrument);
+    }
 }

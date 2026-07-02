@@ -6,7 +6,6 @@ import com.cdm.CDMMod;
 import com.cdm.menu.CuttingLatheMenu;
 import com.cdm.menu.PackagingMenu;
 import com.cdm.menu.RecordPressMenu;
-import com.cdm.menu.SleeveMenu;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -27,7 +26,4 @@ public final class ModMenus {
 
     public static final Supplier<MenuType<RecordPressMenu>> RECORD_PRESS =
             MENUS.register("record_press", () -> IMenuTypeExtension.create(RecordPressMenu::new));
-
-    public static final Supplier<MenuType<SleeveMenu>> SLEEVE =
-            MENUS.register("sleeve", () -> IMenuTypeExtension.create(SleeveMenu::new));
 }

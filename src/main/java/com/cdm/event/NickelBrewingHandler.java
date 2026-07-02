@@ -32,6 +32,11 @@ public final class NickelBrewingHandler {
         if (!(event.getEntity() instanceof ItemEntity item)) {
             return;
         }
+        // Poll every 4th tick: imperceptible for a thrown reagent, but skips 3/4 of the stack/block
+        // lookups this handler would otherwise do for every item entity lying around the world.
+        if ((item.tickCount & 3) != 0) {
+            return;
+        }
         Level level = item.level();
         if (level.isClientSide) {
             return;

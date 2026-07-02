@@ -30,6 +30,34 @@
       "predicate": {
         "cdm:disc_broken": 0.5
       }
+    },
+    {
+      "model": "cdm:item/music_disc_broken_style_0",
+      "predicate": {
+        "cdm:disc_broken": 0.5,
+        "cdm:disc_look": 0.2
+      }
+    },
+    {
+      "model": "cdm:item/music_disc_broken_style_1",
+      "predicate": {
+        "cdm:disc_broken": 0.5,
+        "cdm:disc_look": 0.4
+      }
+    },
+    {
+      "model": "cdm:item/music_disc_broken_style_2",
+      "predicate": {
+        "cdm:disc_broken": 0.5,
+        "cdm:disc_look": 0.6
+      }
+    },
+    {
+      "model": "cdm:item/music_disc_broken_style_3",
+      "predicate": {
+        "cdm:disc_broken": 0.5,
+        "cdm:disc_look": 0.8
+      }
     }
   ],
   "textures": {

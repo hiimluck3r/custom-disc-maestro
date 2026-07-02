@@ -1,6 +1,5 @@
 package com.cdm.recipe;
 
-import com.cdm.registry.ModComponents;
 import com.cdm.registry.ModRecipes;
 
 import net.minecraft.core.HolderLookup;

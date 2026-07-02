@@ -1,5 +1,7 @@
 package com.cdm.block.entity;
 
+import com.cdm.CDMConfig;
+import com.cdm.block.RecordPressBlock;
 import com.cdm.data.DiscDesign;
 import com.cdm.data.DiscMeta;
 import com.cdm.data.RecordContent;
@@ -11,6 +13,7 @@ import com.cdm.registry.ModItems;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -44,6 +47,7 @@ public class RecordPressBlockEntity extends BlockEntity implements MenuProvider 
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
+            if (slot == SLOT_OUTPUT) syncDiscOnPlaten();
         }
 
         @Override
@@ -84,13 +88,16 @@ public class RecordPressBlockEntity extends BlockEntity implements MenuProvider 
 
         ItemStack disc = new ItemStack(ModItems.MUSIC_DISC.get(), 1);
         disc.set(ModComponents.RECORD_CONTENT.get(), content);
+        disc.set(DataComponents.MAX_DAMAGE, CDMConfig.RECORD_USES.get()); // admin-configured wear budget
         DiscMeta meta = matrix.get(ModComponents.DISC_META.get());
         if (meta != null) disc.set(ModComponents.DISC_META.get(), meta);
         disc.set(ModComponents.DISC_DESIGN.get(), DiscDesign.sanitize(new DiscDesign(vinyl, label, style)));
-        // A matrix grown from a worn master stamps pre-worn records (broken master -> broken records).
+        // A matrix grown from a worn master stamps pre-worn records; BAKED_WEAR is a percentage so
+        // it maps cleanly onto whatever maximum this record was configured with.
         Integer bakedWear = matrix.get(ModComponents.BAKED_WEAR.get());
         if (bakedWear != null && bakedWear > 0) {
-            disc.setDamageValue(Math.min(disc.getMaxDamage(), bakedWear));
+            disc.setDamageValue(Math.min(disc.getMaxDamage(),
+                    Math.round(disc.getMaxDamage() * bakedWear / 100.0F)));
         }
 
         items.setStackInSlot(SLOT_OUTPUT, disc);
@@ -102,7 +109,18 @@ public class RecordPressBlockEntity extends BlockEntity implements MenuProvider 
         return true;
     }
 
-    /** The matrix wears one press; once its 32 uses are spent it is destroyed. */
+    /** Mirrors "a pressed record waits in the output" into HAS_DISC so it shows on the platen. */
+    private void syncDiscOnPlaten() {
+        if (level == null || level.isClientSide) return;
+        BlockState state = getBlockState();
+        if (!state.hasProperty(RecordPressBlock.HAS_DISC)) return;
+        boolean hasDisc = !items.getStackInSlot(SLOT_OUTPUT).isEmpty();
+        if (state.getValue(RecordPressBlock.HAS_DISC) != hasDisc) {
+            level.setBlockAndUpdate(worldPosition, state.setValue(RecordPressBlock.HAS_DISC, hasDisc));
+        }
+    }
+
+    /** The matrix wears one press; once its uses are spent it is destroyed. */
     private void wearMatrix() {
         ItemStack matrix = items.getStackInSlot(SLOT_MATRIX);
         if (!matrix.isDamageableItem()) return;
