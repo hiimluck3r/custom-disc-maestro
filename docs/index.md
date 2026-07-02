@@ -1,7 +1,7 @@
 # Custom Disc Maestro
 
 A NeoForge mod that turns making music discs into a small, hands-on manufacturing pipeline — the
-way real vinyl is made. Compose a tune, cut it to a master, electroform a
+way real vinyl is made (well, almost). Compose a tune, cut it to a master, electroform a
 pressing matrix in a poisonous green bath, stamp your own records, dye the artwork, and sleeve the
 finished release. Discs wear out as they play — and you can deliberately distress them, too.
 
@@ -24,7 +24,7 @@ fully multiplayer-safe and positional.
   detune and finally play heavily distorted with a shattered look. A worn master passes its damage
   down to every copy. Wear budgets are **server-configurable**.
 - **Deliberate scratching** at the smithing table to age a record on purpose.
-- **Bundle-style sleeves** with dyed album-cover artwork, a record visibly peeking out, and reusable
+- **Record sleeves** with dyed album-cover artwork, a record visibly peeking out, and reusable
   **stencils** for mass-producing matching covers.
 - Plays **positionally in multiplayer** through the vanilla jukebox, with "Now Playing" metadata.
 
@@ -38,8 +38,7 @@ fully multiplayer-safe and positional.
 
 ![Packaging Table recipe](img/recipe_packaging_table.png)
 
-All three face you when placed, like a furnace. The lathe and the press even show the disc lying on
-top while one is inside.
+The lathe and the press show the disc lying on top while one is inside.
 
 ![Worktable faces](img/worktables.png)
 
@@ -126,18 +125,17 @@ flint` ages it to the next stage (50% → 75% → 100%).
 
 ![Sleeves](img/sleeves.png)
 
-- Craft a **Blank Sleeve** from 8 paper (ring shape, like a chest).
+- Craft a **Blank Sleeve** from 8 paper arranged in a ring.
 
     ![Blank Sleeve recipe](img/recipe_sleeve_blank.png)
 
 - **Design it** at the Packaging Table: cover dye + pattern template + sticker dye + a title, with a
   live preview. Apply consumes the materials.
-- **Sleeves work like bundles.** In any inventory, pick the sleeve up on your cursor and
-  **right-click it onto a record** (or right-click a record onto the sleeve) to tuck it in;
-  **right-click the filled sleeve onto an empty slot** to slide the record back out. Using a filled
-  sleeve in hand **tosses the record onto the ground**. The disc edge visibly **peeks out** of a
-  filled sleeve. (Crafting-grid shortcut still works: sleeve + disc combines, a filled sleeve
-  splits back apart.)
+- **Putting a record in:** pick the sleeve up on your cursor and **right-click it onto a record**
+  (or right-click a record onto the sleeve). **Taking it out:** right-click the filled sleeve onto
+  an empty slot. Using a filled sleeve in hand **tosses the record onto the ground**. The disc edge
+  visibly **peeks out** of a filled sleeve. (The crafting grid works too: sleeve + disc combines,
+  a filled sleeve splits back apart.)
 - A sleeve with a record inside is **sealed** — its design is locked until you take the record out.
 - **Mass-produce artwork**: bake a designed sleeve into a reusable **Stencil** (the sleeve is
   consumed), then craft `stencil + N blank sleeves` → N designed sleeves; the stencil is returned

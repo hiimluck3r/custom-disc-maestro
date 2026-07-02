@@ -11,7 +11,7 @@
 [![NeoForge](https://img.shields.io/badge/NeoForge-21.1.228-orange.svg)](https://neoforged.net/)
 
 A NeoForge mod for **Minecraft 1.21.1** that turns making music discs into a hands-on manufacturing
-pipeline — the way real vinyl is made. Compose a tune in the piano-roll sequencer (or import a
+pipeline — the way real vinyl is made (well, almost). Compose a tune in the piano-roll sequencer (or import a
 `.nbs` file), cut it to a **master disc**, grow a **galvanic matrix** in a poisonous kupfernickel
 bath, **press** dyed records with album-cover sleeves — and mind the groove wear: discs degrade as
 they play. All audio uses Minecraft's own note-block sounds; multiplayer-safe and positional.
