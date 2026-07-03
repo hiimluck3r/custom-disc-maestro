@@ -1,11 +1,8 @@
-import net.darkhax.curseforgegradle.TaskPublishCurseForge
-
 plugins {
     id 'java-library'
     id 'maven-publish'
     id 'net.neoforged.moddev' version '2.0.141'
-    id 'com.modrinth.minotaur' version '2.9.0'
-    id 'net.darkhax.curseforgegradle' version '1.1.25'
+    id 'me.modmuss50.mod-publish-plugin' version '2.1.1'
     id 'idea'
 }
 
@@ -153,36 +150,31 @@ ext.releaseType = {
     v.contains('-alpha') ? 'alpha' : (v.contains('-beta') || v.contains('-rc')) ? 'beta' : 'release'
 }
 
-modrinth {
-    token = providers.environmentVariable('MODRINTH_TOKEN').orElse('')
-    projectId = providers.gradleProperty('modrinth_project_id')
-            .orElse(providers.environmentVariable('MODRINTH_PROJECT_ID')).orElse('')
-    versionNumber = "${mod_version}+${minecraft_version}"
-    versionType = project.ext.releaseType()
-    uploadFile = tasks.named('jar')
-    gameVersions.add(minecraft_version.toString())
-    loaders.add('neoforge')
-    detectLoaders = false
+publishMods {
+    file = tasks.jar.archiveFile
+    version = "${mod_version}+${minecraft_version}"
     changelog = providers.provider { project.ext.releaseChangelog() }
-}
+    def relType = project.ext.releaseType()
+    type = relType == 'alpha' ? ALPHA : relType == 'beta' ? BETA : STABLE
+    modLoaders.add('neoforge')
 
-tasks.register('curseforge', TaskPublishCurseForge) {
-    group = 'publishing'
-    description = 'Publishes the mod jar to CurseForge'
-    apiToken = System.getenv('CURSEFORGE_TOKEN') ?: ''
-    def mainFile = upload(project.ext.cfProjectId, tasks.jar)
-    mainFile.releaseType = project.ext.releaseType()
-    mainFile.changelogType = 'markdown'
-    mainFile.changelog = project.ext.releaseChangelog()
-    mainFile.addGameVersion(minecraft_version.toString())
-    mainFile.addModLoader('NeoForge')
-    mainFile.addJavaVersion('Java 21')
-}
+    modrinth {
+        accessToken = providers.environmentVariable('MODRINTH_TOKEN').orElse('')
+        projectId = providers.gradleProperty('modrinth_project_id')
+                .orElse(providers.environmentVariable('MODRINTH_PROJECT_ID')).orElse('')
+        minecraftVersions.add(minecraft_version.toString())
+        // Modrinth requires per-version environment metadata; the mod must be present on both sides.
+        environment = CLIENT_AND_SERVER
+    }
 
-tasks.register('publishMods') {
-    group = 'publishing'
-    description = 'Publishes the mod to Modrinth and CurseForge'
-    dependsOn('modrinth', 'curseforge')
+    curseforge {
+        accessToken = providers.environmentVariable('CURSEFORGE_TOKEN').orElse('')
+        projectId = project.ext.cfProjectId
+        minecraftVersions.add(minecraft_version.toString())
+        javaVersions.add(JavaVersion.VERSION_21)
+        client = true
+        server = true
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {

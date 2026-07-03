@@ -57,11 +57,11 @@ jobs:
       # External publishes run only when the matching token secret is configured.
       - name: Publish to Modrinth
         if: ${{ env.MODRINTH_TOKEN != '' && steps.published.outputs.exists == 'false' }}
-        run: ./gradlew modrinth --no-daemon --stacktrace
+        run: ./gradlew publishModrinth --no-daemon --stacktrace
 
       - name: Publish to CurseForge
         if: ${{ env.CURSEFORGE_TOKEN != '' && steps.published.outputs.exists == 'false' }}
-        run: ./gradlew curseforge --no-daemon --stacktrace
+        run: ./gradlew publishCurseforge --no-daemon --stacktrace
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
