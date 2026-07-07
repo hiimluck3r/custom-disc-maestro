@@ -41,7 +41,7 @@ jobs:
 
       # Downloads the Minecraft client jar from Mojang's public CDN (cached between runs).
       - name: Cache Minecraft client jar
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/cdm-docs
           key: mc-client-1.21.1
